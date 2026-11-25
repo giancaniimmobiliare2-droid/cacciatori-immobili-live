@@ -1,0 +1,29 @@
+{
+  "comuni_target": [
+    "Favara",
+    "Agrigento",
+    "Aragona",
+    "Comitini",
+    "Porto Empedocle",
+    "Siculiana",
+    "Realmonte"
+  ],
+  "portali_attivi": {
+    "subito": true,
+    "idealista": true,
+    "immobiliare": true,
+    "facebook_marketplace": true
+  },
+  "telegram": {
+    "bot_token": "9268358897:AAE2OeJTfU5d05pQVWLe1EeJQPwLo470GVw",
+    "chat_id": "1723292483"
+  },
+  "google_apps_script": {
+    "webhook_url": "https://script.google.com/macros/s/AKfycbwEeH82YCSoOc-KRZx6pSQa_k3Kb5i252_Ajljlo20IOBinGiqA1E0ZE_2gKljHpLu3/exec"
+  },
+  "settings": {
+    "user_agent_rotate": true,
+    "delay_between_requests_sec": 2,
+    "max_pages_per_comune": 1
+  }
+}
