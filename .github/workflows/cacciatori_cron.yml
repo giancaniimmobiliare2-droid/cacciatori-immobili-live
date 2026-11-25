@@ -1,0 +1,52 @@
+name: Cacciatori di Immobili — Cron Scheduler (Immobiliare Giancani)
+
+on:
+  schedule:
+    # Esegue ogni ora (24/7) per intercettare tempestivamente i nuovi annunci privati
+    - cron: '15 * * * *'
+  workflow_dispatch: # Consente l'avvio manuale con pulsante da interfaccia GitHub
+
+permissions:
+  contents: write
+
+jobs:
+  scansione-immobili:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del Repository
+        uses: actions/checkout@v4
+
+      - name: Configura Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Installa Dipendenze Python e Playwright Chromium
+        run: |
+          pip install --upgrade pip
+          if [ -f "cacciatori_immobili/bot_python/requirements.txt" ]; then
+            pip install -r cacciatori_immobili/bot_python/requirements.txt
+          elif [ -f "bot_python/requirements.txt" ]; then
+            pip install -r bot_python/requirements.txt
+          fi
+          playwright install --with-deps chromium
+
+      - name: Esegui Scansione Cacciatori di Immobili — Immobiliare Giancani
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          APPS_SCRIPT_WEBHOOK_URL: ${{ secrets.APPS_SCRIPT_WEBHOOK_URL }}
+        run: |
+          if [ -f "cacciatori_immobili/bot_python/cacciatore_bot.py" ]; then
+            python cacciatori_immobili/bot_python/cacciatore_bot.py
+          else
+            python bot_python/cacciatore_bot.py
+          fi
+
+      - name: Salva e Sincronizza Storico Database (cacciatore_db.json)
+        run: |
+          git config --global user.name "Cacciatori Bot — Immobiliare Giancani"
+          git config --global user.email "bot@immobiliaregiancani.it"
+          git add -A "*cacciatore_db.json"
+          git diff --staged --quiet || (git commit -m "chore(cacciatori): aggiornamento database immobili [skip ci] — Immobiliare Giancani" && git push)
